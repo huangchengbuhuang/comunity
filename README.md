@@ -2,7 +2,18 @@
 
 
 ##资料
-https://spring.io/guides/gs/serving-web-content/
+[Spring 文档](https://spring.io/guides/gs/serving-web-content/)
+
+[仿照的社区](https://elasticsearch.cn/)
+
+[Bootstrap 社区](https://v3.bootcss.com/)
+
+[Github OAuth](https://docs.github.com/en/developers/apps/creating-an-oauth-app)
+
+
+
+
+
 
 ##工具
-https://github.com/huangchengbuhuang/comunity
+[Github 仓库](https://github.com/huangchengbuhuang/comunity)
