@@ -25,6 +25,7 @@ public class Indexcontroller {
     @GetMapping("/")
     public String index(HttpServletRequest request)
     {
+
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {//取出cookie并进行比较
             if(cookie.getName().equals("token"))
@@ -39,7 +40,6 @@ public class Indexcontroller {
 
             }
         }
-
         return "index";
     }
 

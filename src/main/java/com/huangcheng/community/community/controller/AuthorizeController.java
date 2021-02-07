@@ -54,7 +54,7 @@ public class AuthorizeController {
         String getaccesstoken = githubprovider.getaccesstoken(acesstokenDto);
 
         Githubuser githubuser = githubprovider.getuser(getaccesstoken);
-        if(githubuser !=null){
+        if(githubuser !=null&&githubuser.getId()!=null){
             //用户放入数据库
             User user = new User();
             String token = UUID.randomUUID().toString();
