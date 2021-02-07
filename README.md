@@ -11,6 +11,7 @@
 [Github OAuth](https://docs.github.com/en/developers/apps/creating-an-oauth-app)
 [mybatis添加依赖](http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure)
 
+[flyway数据库版本控制工具](https://flywaydb.org/documentation/getstarted/how)
 
 
 
