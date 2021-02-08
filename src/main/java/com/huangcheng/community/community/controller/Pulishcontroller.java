@@ -63,16 +63,19 @@ public class Pulishcontroller {
         //获取cookie来查询用户信息
         User user = null;
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {//取出cookie并进行比较，有cookie的话用户信息取出来
-            if(cookie.getName().equals("token"))
-            {
-                String token = cookie.getValue();
-                user = userMapper.findToken(token);
-                if(user!=null)
+        if(cookies!=null&&cookies.length!=0)
+        {
+            for (Cookie cookie : cookies) {//取出cookie并进行比较，有cookie的话用户信息取出来
+                if(cookie.getName().equals("token"))
                 {
-                    request.getSession().setAttribute("user",user);
+                    String token = cookie.getValue();
+                    user = userMapper.findToken(token);
+                    if(user!=null)
+                    {
+                        request.getSession().setAttribute("user",user);
+                    }
+                    break;
                 }
-                break;
             }
         }
         if(user==null)//如果没有用户信息的话，那么提示用户未登录
