@@ -1,6 +1,7 @@
 package com.huangcheng.community.community.controller;
 import com.huangcheng.community.community.Mapper.QuestionMapper;
 import com.huangcheng.community.community.Mapper.UserMapper;
+import com.huangcheng.community.community.dto.PagnationDto;
 import com.huangcheng.community.community.dto.QuestionDto;
 import com.huangcheng.community.community.model.Question;
 import com.huangcheng.community.community.model.User;
@@ -32,7 +33,9 @@ public class Indexcontroller {
 
         @GetMapping("/")
         public String index(HttpServletRequest request
-            ,Model model)
+            ,Model model
+            ,@RequestParam(name = "page",defaultValue = "1")Integer page
+                ,@RequestParam(name = "size",defaultValue = "2")Integer size)
         {
 
             Cookie[] cookies = request.getCookies();
@@ -53,12 +56,12 @@ public class Indexcontroller {
                 }
             }
 
-            List<QuestionDto> questoinlist=questionService.list();
-        model.addAttribute("questions",questoinlist);
-        System.out.print(questoinlist.toString());
+           PagnationDto pagnationDto=questionService.list(page,size);
+        model.addAttribute("pagnationDto",pagnationDto);
 
 
-        return "index";
+
+            return "index";
     }
 
 

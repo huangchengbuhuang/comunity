@@ -2,6 +2,7 @@ package com.huangcheng.community.community.service;
 
 import com.huangcheng.community.community.Mapper.QuestionMapper;
 import com.huangcheng.community.community.Mapper.UserMapper;
+import com.huangcheng.community.community.dto.PagnationDto;
 import com.huangcheng.community.community.dto.QuestionDto;
 import com.huangcheng.community.community.model.Question;
 import com.huangcheng.community.community.model.User;
@@ -26,10 +27,33 @@ public class QusestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public List<QuestionDto> list() {
+    public PagnationDto list(Integer page, Integer size) {
 
-        List<Question> questions = questionMapper.list();
+
+        PagnationDto pagnationDto = new PagnationDto();
+        Integer totalcount= questionMapper.count();
+        pagnationDto.setTotalPage(1);//这里仅表示初始化，否则出现空指针异常，totalpage会更新
+
+        if(totalcount%size==0)
+        {
+            pagnationDto.setTotalPage(totalcount/size);
+        }else{
+            pagnationDto.setTotalPage(totalcount/size+1);
+        }
+        if(page<1){//判断是否有页面越界
+            page=1;
+        }
+        if(page > pagnationDto.getTotalPage()){
+            page=pagnationDto.getTotalPage();
+        }
+        pagnationDto.setPagination(totalcount,page,size);
+
+
+        //size*(page-1)
+        int offset = size * (page - 1);//偏移量基址
+        List<Question> questions = questionMapper.list(offset,size);
         List<QuestionDto> questionDtoList=new ArrayList<>();
+
         for (Question question : questions) {
            User user =userMapper.findById(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
@@ -37,6 +61,9 @@ public class QusestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        return questionDtoList;
+
+        pagnationDto.setQuestions(questionDtoList);
+
+        return pagnationDto;
     }
 }
