@@ -32,21 +32,23 @@ public class QusestionService {
 
         PagnationDto pagnationDto = new PagnationDto();
         Integer totalcount= questionMapper.count();
-        pagnationDto.setTotalPage(1);//这里仅表示初始化，否则出现空指针异常，totalpage会更新
-
+        //pagnationDto.setTotalPage(1);//这里仅表示初始化，否则出现空指针异常，totalpage会更新
+        Integer totalPage;
         if(totalcount%size==0)
         {
-            pagnationDto.setTotalPage(totalcount/size);
+            totalPage=totalcount/size;
         }else{
-            pagnationDto.setTotalPage(totalcount/size+1);
+            totalPage=totalcount/size+1;
         }
+
         if(page<1){//判断是否有页面越界
             page=1;
         }
-        if(page > pagnationDto.getTotalPage()){
-            page=pagnationDto.getTotalPage();
+        if(page > totalPage){
+            page=totalPage
+            ;
         }
-        pagnationDto.setPagination(totalcount,page,size);
+        pagnationDto.setPagination(totalPage,page);
 
 
         //size*(page-1)
@@ -56,6 +58,46 @@ public class QusestionService {
 
         for (Question question : questions) {
            User user =userMapper.findById(question.getCreator());
+            QuestionDto questionDto = new QuestionDto();
+            BeanUtils.copyProperties(question,questionDto);
+            questionDto.setUser(user);
+            questionDtoList.add(questionDto);
+        }
+
+        pagnationDto.setQuestions(questionDtoList);
+
+        return pagnationDto;
+    }
+
+    public PagnationDto list(Integer userId, Integer page, Integer size) {
+
+        PagnationDto pagnationDto = new PagnationDto();
+        Integer totalcount= questionMapper.countuserById(userId);
+
+        Integer totalPage;
+        if(totalcount%size==0)
+        {
+            totalPage=totalcount/size;
+        }else{
+            totalPage=totalcount/size+1;
+        }
+
+        if(page<1){//判断是否有页面越界
+            page=1;
+        }
+        if(page > totalPage){
+            page=totalPage;
+        }
+        pagnationDto.setPagination(totalPage,page);
+
+
+        //size*(page-1)
+        int offset = size * (page - 1);//偏移量基址
+        List<Question> questions = questionMapper.listByUserId(userId,offset,size);
+        List<QuestionDto> questionDtoList=new ArrayList<>();
+
+        for (Question question : questions) {
+            User user =userMapper.findById(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question,questionDto);
             questionDto.setUser(user);
