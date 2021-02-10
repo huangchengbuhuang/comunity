@@ -1,6 +1,6 @@
 package com.huangcheng.community.community.controller;
 
-import com.huangcheng.community.community.Mapper.UserMapper;
+
 import com.huangcheng.community.community.dto.PagnationDto;
 import com.huangcheng.community.community.model.User;
 import com.huangcheng.community.community.service.QusestionService;
@@ -23,8 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class Profilecontroller {
-    @Autowired
-    private UserMapper userMapper;
+
     @Autowired
     private QusestionService questionService;
     @GetMapping("/profile/{action}")
@@ -33,23 +32,7 @@ public class Profilecontroller {
                           HttpServletRequest request
             ,@RequestParam(name = "page",defaultValue = "1")Integer page
             ,@RequestParam(name = "size",defaultValue = "5")Integer size){
-        User user=null;
-        Cookie[] cookies = request.getCookies();
-        if(cookies!=null&&cookies.length!=0)//判断cookies是否为空
-        {
-            for (Cookie cookie : cookies) {//取出cookie并进行比较
-                if(cookie.getName().equals("token"))
-                {
-                    String token = cookie.getValue();
-                      user = userMapper.findToken(token);
-                    if(user!=null)
-                    {
-                        request.getSession().setAttribute("user",user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user=(User)request.getSession().getAttribute("user");
         if( user == null){
             return  "redirect:/";
         }
