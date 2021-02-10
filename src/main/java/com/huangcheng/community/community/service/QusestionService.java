@@ -118,4 +118,19 @@ public class QusestionService {
         return questionDto;
 
     }
+
+    public void createOrupdate(Question question) {
+        if(question.getId()==null ){
+            //插入
+            question.setGmt_create(System.currentTimeMillis());
+            question.setGmt_modified(question.getGmt_create());
+            questionMapper.create(question);
+        }else {
+            //更新
+            question.setGmt_modified(question.getGmt_create());
+            questionMapper.update(question);
+
+        }
+
+    }
 }

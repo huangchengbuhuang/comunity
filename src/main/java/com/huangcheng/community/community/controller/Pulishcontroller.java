@@ -2,12 +2,15 @@ package com.huangcheng.community.community.controller;
 
 import com.huangcheng.community.community.Mapper.QuestionMapper;
 import com.huangcheng.community.community.Mapper.UserMapper;
+import com.huangcheng.community.community.dto.QuestionDto;
 import com.huangcheng.community.community.model.Question;
 import com.huangcheng.community.community.model.User;
+import com.huangcheng.community.community.service.QusestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,9 +26,19 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class Pulishcontroller {
-    @Autowired
-    private QuestionMapper questionMapper;
 
+    @Autowired
+    private QusestionService qusestionService;
+@GetMapping("/publish/{id}")
+public String edit(@PathVariable(name="id") Integer id,
+                   Model model){
+    QuestionDto question = qusestionService.getById(id);
+    model.addAttribute("title",question.getTitle());
+    model.addAttribute("descripton",question.getDescription());
+    model.addAttribute("tag",question.getTag());
+    model.addAttribute("id",question.getId());
+    return  "publish";
+}
 
     @GetMapping("/publish")
     public String publish()
@@ -37,6 +50,7 @@ public class Pulishcontroller {
             @RequestParam(value = "title" ,required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
+            @RequestParam(value = "id",required = false)Integer id,
             HttpServletRequest request,
           Model model) {
         model.addAttribute("title",title);
@@ -71,10 +85,9 @@ public class Pulishcontroller {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmt_create(System.currentTimeMillis());
-        question.setGmt_modified(question.getGmt_create());
-
-        questionMapper.create(question);
+        question.setId(id);
+        //在此处判断更新问题还是创建问题因为使用的都是publish的页面进行的
+        qusestionService.createOrupdate(question);
 
         return "redirect:/";
     }
