@@ -46,7 +46,7 @@ public String edit(@PathVariable(name="id") Integer id,
         return  "publish";
     }
     @PostMapping("/publish")
-    public String doPublish (
+    public String doPublish (//发布页面
             @RequestParam(value = "title" ,required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
@@ -54,7 +54,7 @@ public String edit(@PathVariable(name="id") Integer id,
             HttpServletRequest request,
           Model model) {
         model.addAttribute("title",title);
-        model.addAttribute("descripton",description);
+        model.addAttribute("description",description);
         model.addAttribute("tag",tag);
 
         if(title==null || title==""){

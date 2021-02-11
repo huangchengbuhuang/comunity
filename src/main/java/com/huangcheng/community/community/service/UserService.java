@@ -2,8 +2,11 @@ package com.huangcheng.community.community.service;
 
 import com.huangcheng.community.community.Mapper.UserMapper;
 import com.huangcheng.community.community.model.User;
+import com.huangcheng.community.community.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 荒城
@@ -18,20 +21,29 @@ public class UserService {
     private UserMapper userMapper;
 
     public void createOrupdate(User user) {
-        User dbuser=userMapper.findByAccountId(user.getAccount_id());
-        if(dbuser == null){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(user.getAccountId());
+        List<User> users = userMapper.selectByExample(userExample);
+
+        if(users.size() == 0){
             //插入
-            user.setGmt_Creat(System.currentTimeMillis());
-            user.setGmt_Modified(user.getGmt_Creat());
+            user.setGmtCreat(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreat());
             userMapper.insert(user);
         }else{
             //更新
-            dbuser.setGmt_Creat(System.currentTimeMillis());
-            dbuser.setName(user.getName());
-            dbuser.setAvatar_url(user.getAvatar_url());
-            dbuser.setToken(user.getToken());
 
-            userMapper.update(dbuser);
+            User dbuser = users.get(0);
+            User updateuser = new User();
+            updateuser.setGmtModified(System.currentTimeMillis());
+            updateuser.setName(user.getName());
+            updateuser.setAvatarUrl(user.getAvatarUrl());
+            updateuser.setToken(user.getToken());
+
+            UserExample example = new UserExample();
+            example.createCriteria().andIdEqualTo(dbuser.getId());
+            userMapper.updateByExampleSelective(updateuser, example);
+
         }
     }
 }
