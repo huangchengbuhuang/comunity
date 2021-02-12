@@ -4,6 +4,8 @@ import com.huangcheng.community.community.Mapper.QuestionMapper;
 import com.huangcheng.community.community.Mapper.UserMapper;
 import com.huangcheng.community.community.dto.PagnationDto;
 import com.huangcheng.community.community.dto.QuestionDto;
+import com.huangcheng.community.community.exception.CustomizeErrorCode;
+import com.huangcheng.community.community.exception.CustomizeException;
 import com.huangcheng.community.community.model.Question;
 import com.huangcheng.community.community.model.QuestionExample;
 import com.huangcheng.community.community.model.User;
@@ -119,6 +121,9 @@ public class QusestionService {
 
     public QuestionDto getById(Integer id) {
          Question  question= questionMapper.selectByPrimaryKey(id);
+         if(question == null){
+             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+         }
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question,questionDto);
         User user =userMapper.selectByPrimaryKey(question.getCreator());
@@ -141,7 +146,12 @@ public class QusestionService {
             updateQuestion.setTitle(question.getTitle());
             updateQuestion.setDescription(question.getDescription());
             updateQuestion.setDescription(question.getTag());
-            questionMapper.updateByExampleSelective(updateQuestion,new QuestionExample());
+            QuestionExample example = new QuestionExample();
+            example.createCriteria().andCreatorEqualTo(question.getId());
+            int updated=questionMapper.updateByExampleSelective(updateQuestion, example);
+            if(updated!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
 
         }
 
