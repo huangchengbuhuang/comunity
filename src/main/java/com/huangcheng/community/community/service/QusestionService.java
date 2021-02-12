@@ -1,5 +1,6 @@
 package com.huangcheng.community.community.service;
 
+import com.huangcheng.community.community.Mapper.QuestionExtMapper;
 import com.huangcheng.community.community.Mapper.QuestionMapper;
 import com.huangcheng.community.community.Mapper.UserMapper;
 import com.huangcheng.community.community.dto.PagnationDto;
@@ -30,6 +31,8 @@ public class QusestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private  QuestionExtMapper questionExtMapper;
 
     public PagnationDto list(Integer page, Integer size) {
 
@@ -155,5 +158,12 @@ public class QusestionService {
 
         }
 
+    }
+
+    public void incView(Integer id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }
