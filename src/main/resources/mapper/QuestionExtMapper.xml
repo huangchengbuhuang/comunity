@@ -18,11 +18,17 @@
     <result column="TAG" jdbcType="VARCHAR" property="tag" />
   </resultMap>
   <update id="incView" parameterType="com.huangcheng.community.community.model.Question">
-
     update QUESTION
     set
     VIEW_COUNT = VIEW_COUNT +  #{viewCount,jdbcType=INTEGER}
     where id = #{id}
-
   </update>
+  <update id="incCommentCount" parameterType="com.huangcheng.community.community.model.Question">
+    update QUESTION
+    set
+    COMMENT_COUNT = COMMENT_COUNT +  #{commentCount,jdbcType=INTEGER}
+    where id = #{id}
+  </update>
+
+
 </mapper>
